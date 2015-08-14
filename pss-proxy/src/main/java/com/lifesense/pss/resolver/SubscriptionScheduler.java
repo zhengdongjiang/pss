@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
  * @author ZengFC
  *
  */
-public class SubscriptionContext {
+public class SubscriptionScheduler {
 	private ExecutorService executor;
-	private Logger logger = LoggerFactory.getLogger(SubscriptionContext.class);
+	private Logger logger = LoggerFactory.getLogger(SubscriptionScheduler.class);
 	private ListenerResolver listenerResolver;
 
 	public void destory() {
@@ -35,7 +35,7 @@ public class SubscriptionContext {
 	}
 
 
-	public SubscriptionContext(ListenerResolver listenerResolver) {
+	public SubscriptionScheduler(ListenerResolver listenerResolver) {
 		super();
 		this.listenerResolver = listenerResolver;
 	}

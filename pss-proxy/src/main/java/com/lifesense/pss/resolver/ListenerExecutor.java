@@ -1,6 +1,5 @@
 package com.lifesense.pss.resolver;
 
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
 import kafka.consumer.ConsumerIterator;
@@ -9,7 +8,7 @@ import kafka.message.MessageAndMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.lifesense.pss.MessageContext;
 import com.lifesense.pss.encode.ObjectEncoder;
 
 public class ListenerExecutor implements Runnable {
@@ -33,16 +32,14 @@ public class ListenerExecutor implements Runnable {
 			MessageAndMetadata<byte[], byte[]> m = consumer.next();
 			submitCaller(new ListenerExecutor(consumer, executor, topic, listenerResolver));
 
-			TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
-
-			HashMap<String, String> headers;
+			MessageContext context = null;
 			try {
-				headers = ObjectEncoder.mapper.readValue(m.key(), typeRef);
+				context = ObjectEncoder.mapper.readValue(m.key(), MessageContext.class);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				throw new IllegalArgumentException(e);
 			}
-			listenerResolver.doListener(topic, m.message(), headers);
+			listenerResolver.doListener(topic, m.message(), context);
 		}
 	}
 

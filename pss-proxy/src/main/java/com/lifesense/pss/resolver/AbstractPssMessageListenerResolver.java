@@ -8,6 +8,7 @@ import kafka.consumer.ConsumerConfig;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 
+import com.lifesense.pss.MessageContext;
 import com.lifesense.pss.api.PssMessage;
 
 /**
@@ -16,7 +17,7 @@ import com.lifesense.pss.api.PssMessage;
  */
 public abstract class AbstractPssMessageListenerResolver implements ListenerResolver{
 	private String zookeeper;	//zookpeer地址. 如果是zookeer集群, 各个地址间以英文逗号隔开
-	private String serverName;	//当前应用名称,只能是以英文字母开头, 英文字母or数字or下划线or减号的组合
+	private String appId;	//当前应用名称,只能是以英文字母开头, 英文字母or数字or下划线or减号的组合
 	private int sessionTimeout = 400;
 	private int syncTimeout = 200;
 	private int autoCommitInterval = 1000;
@@ -59,18 +60,6 @@ public abstract class AbstractPssMessageListenerResolver implements ListenerReso
 		this.autoCommitInterval = autoCommitInterval;
 	}
 
-	public String getServerName() {
-		return serverName;
-	}
-
-	/** 当前应用名称,只能是以英文字母开头, 英文字母or数字or下划线or减号的组合, 必填  <br>
-	 *  当前应用若为多个实例的集群时, 统一的serverName可以保证统一topic只被集群中的一台接收
-	 * @param serverName
-	 */
-	public void setServerName(String serverName) {
-		this.serverName = serverName;
-	}
-
 	public float getThreadsTimes() {
 		return threadsTimes;
 	}
@@ -79,7 +68,7 @@ public abstract class AbstractPssMessageListenerResolver implements ListenerReso
 		this.threadsTimes = threadsTimes;
 	}
 
-	public abstract <T extends PssMessage>void doListener(String topic, byte[] message, Map<String, String> headers);
+	public abstract <T extends PssMessage>void doListener(String topic, byte[] message, MessageContext context);
 
 	@Override
 	public abstract Map<String, List<KafkaStream<byte[], byte[]>>> buildConsumer();
@@ -87,7 +76,7 @@ public abstract class AbstractPssMessageListenerResolver implements ListenerReso
 	protected ConsumerConfig createConsumerConfig() {
 		Properties props = new Properties();
 		props.put("zookeeper.connect", getZookeeper());
-		props.put("group.id", getServerName());
+		props.put("group.id", getAppId());
 		props.put("zookeeper.session.timeout.ms", getSessionTimeout()+"");
 		props.put("zookeeper.sync.time.ms", getSyncTimeout()+"");
 		props.put("auto.commit.interval.ms", getAutoCommitInterval()+"");
@@ -108,6 +97,18 @@ public abstract class AbstractPssMessageListenerResolver implements ListenerReso
 
 	protected void setThreads(int threads) {
 		this.threads = threads;
+	}
+
+	public String getAppId() {
+		return appId;
+	}
+	
+	/** 当前应用名称,只能是以英文字母开头, 英文字母or数字or下划线or减号的组合, 必填  <br>
+	 *  当前应用若为多个实例的集群时, 统一的serverName可以保证统一topic只被集群中的一台接收
+	 * @param serverName
+	 */
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
 	
 }

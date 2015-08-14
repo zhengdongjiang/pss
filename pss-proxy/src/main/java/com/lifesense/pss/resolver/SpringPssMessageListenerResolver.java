@@ -15,6 +15,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.lifesense.pss.MessageContext;
 import com.lifesense.pss.PssMessageTopicListener;
 import com.lifesense.pss.api.PssMessage;
 import com.lifesense.pss.encode.ObjectEncoder;
@@ -31,7 +32,7 @@ public class SpringPssMessageListenerResolver extends AbstractPssMessageListener
 	private ApplicationContext applicationContext;
 
 	@Override
-	public <T extends PssMessage> void doListener(String topic, byte[] message, Map<String, String> headers) {
+	public <T extends PssMessage> void doListener(String topic, byte[] message, MessageContext context) {
 		@SuppressWarnings("unchecked")
 		Class<T> messageType = (Class<T>) topicMsgTypeMap.get(topic);
 		String beanName = topicBeanNameMap.get(topic);
@@ -47,7 +48,7 @@ public class SpringPssMessageListenerResolver extends AbstractPssMessageListener
 			logger.error(e.getMessage(), e);
 			throw new IllegalArgumentException(e);
 		}
-		listener.onMessage(msg, headers);
+		listener.onMessage(msg, context);
 	}
 
 	@Override

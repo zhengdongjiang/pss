@@ -11,6 +11,7 @@ import kafka.consumer.KafkaStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lifesense.pss.MessageContext;
 import com.lifesense.pss.PssMessageTopicListener;
 import com.lifesense.pss.api.PssMessage;
 import com.lifesense.pss.encode.ObjectEncoder;
@@ -21,6 +22,10 @@ public class DefaultPssMessageListenerResolver extends AbstractPssMessageListene
 	
 	
 	
+	/** 添加新的事件监听器
+	 * @param listener
+	 * @return
+	 */
 	public DefaultPssMessageListenerResolver addListener(PssMessageTopicListener<? extends PssMessage> listener) {
 		if (listener == null) {
 			throw new NullPointerException("listener不能为null");
@@ -37,7 +42,7 @@ public class DefaultPssMessageListenerResolver extends AbstractPssMessageListene
 	}
 	
 	@Override
-	public <T extends PssMessage>void doListener(String topic, byte[] message, Map<String, String> headers) {
+	public <T extends PssMessage>void doListener(String topic, byte[] message, MessageContext context) {
 		if (pssListeners != null && pssListeners.containsKey(topic)){
 			@SuppressWarnings("unchecked")
 			PssMessageTopicListener<T> listener = (PssMessageTopicListener<T>) pssListeners.get(topic);
@@ -50,7 +55,7 @@ public class DefaultPssMessageListenerResolver extends AbstractPssMessageListene
 				logger.error(e.getMessage(), e);
 				throw new IllegalArgumentException(e);
 			}
-			listener.onMessage(msg, headers);
+			listener.onMessage(msg, context);
 		}
 	}
 

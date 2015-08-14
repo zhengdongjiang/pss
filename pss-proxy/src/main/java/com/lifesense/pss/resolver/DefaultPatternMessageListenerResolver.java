@@ -10,6 +10,7 @@ import kafka.consumer.KafkaStream;
 import kafka.consumer.Whitelist;
 import kafka.javaapi.consumer.ConsumerConnector;
 
+import com.lifesense.pss.MessageContext;
 import com.lifesense.pss.StringTopicListener;
 import com.lifesense.pss.api.PssMessage;
 
@@ -17,7 +18,7 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 	private String topicPattern;
 	private StringTopicListener listener;
 	private String zookeeper;
-	private String serverName;
+	private String appId;
 	private int sessionTimeout = 400;
 	private int syncTimeout = 200;
 	private int autoCommitInterval = 1000;
@@ -64,18 +65,11 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 		this.autoCommitInterval = autoCommitInterval;
 	}
 
-	public String getServerName() {
-		return serverName;
-	}
-
-	public void setServerName(String serverName) {
-		this.serverName = serverName;
-	}
 
 
 	@Override
-	public <T extends PssMessage>void doListener(String topic, byte[] message, Map<String, String> headers) {
-			listener.onMessage(new String(message), headers);
+	public <T extends PssMessage>void doListener(String topic, byte[] message, MessageContext context) {
+			listener.onMessage(new String(message), context);
 	}
 
 	@Override
@@ -92,7 +86,7 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 	private ConsumerConfig createConsumerConfig() {
 		Properties props = new Properties();
 		props.put("zookeeper.connect", getZookeeper());
-		props.put("group.id", getServerName());
+		props.put("group.id", getAppId());
 		props.put("zookeeper.session.timeout.ms", getSessionTimeout()+"");
 		props.put("zookeeper.sync.time.ms", getSyncTimeout()+"");
 		props.put("auto.commit.interval.ms", getAutoCommitInterval()+"");
@@ -106,6 +100,14 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 
 	public ConsumerConnector getConsumer() {
 		return consumer;
+	}
+
+	public String getAppId() {
+		return appId;
+	}
+
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
 	
 }
