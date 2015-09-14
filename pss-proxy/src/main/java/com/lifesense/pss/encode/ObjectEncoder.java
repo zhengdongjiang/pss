@@ -6,6 +6,10 @@ import kafka.utils.VerifiableProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author ZengFC
+ *
+ */
 public class ObjectEncoder implements Encoder<Object>{
 	public static final ObjectMapper mapper =  new ObjectMapper();
 	

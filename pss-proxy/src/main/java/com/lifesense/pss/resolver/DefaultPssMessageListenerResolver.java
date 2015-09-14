@@ -16,6 +16,10 @@ import com.lifesense.pss.PssMessageTopicListener;
 import com.lifesense.pss.api.PssMessage;
 import com.lifesense.pss.encode.ObjectEncoder;
 
+/**
+ * @author ZengFC
+ *
+ */
 public class DefaultPssMessageListenerResolver extends AbstractPssMessageListenerResolver implements ListenerResolver{
 	private Map<String, PssMessageTopicListener<? extends PssMessage>> pssListeners;
 	private Logger logger = LoggerFactory.getLogger(DefaultPssMessageListenerResolver.class);

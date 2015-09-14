@@ -25,6 +25,9 @@ public interface ListenerResolver {
 	 * @return
 	 */
 	String getAppId();
+	
+	
+	boolean isIgnoreSelfMessage();
 
 	int getSessionTimeout();
 

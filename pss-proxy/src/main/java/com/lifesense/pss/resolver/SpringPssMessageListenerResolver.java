@@ -61,7 +61,6 @@ public class SpringPssMessageListenerResolver extends AbstractPssMessageListener
 
 		Integer threadsPerTopic = new Integer((int) getThreadsTimes());
 		for (String beanName : maps.keySet()) {
-			
 			PssMessageTopicListener<?> listener = maps.get(beanName);
 			Class<?> target = null;
 			if (listener instanceof Advised){

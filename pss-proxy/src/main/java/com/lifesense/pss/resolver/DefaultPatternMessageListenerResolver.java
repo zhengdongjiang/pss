@@ -14,6 +14,10 @@ import com.lifesense.pss.MessageContext;
 import com.lifesense.pss.StringTopicListener;
 import com.lifesense.pss.api.PssMessage;
 
+/**
+ * @author ZengFC
+ *
+ */
 public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 	private String topicPattern;
 	private StringTopicListener listener;
@@ -24,6 +28,7 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 	private int autoCommitInterval = 1000;
 	private ConsumerConnector consumer;
 	private int threads = 3;
+	private boolean ignoreSelfMessage = true;
 	
 	public void setListener(String topicPattern, StringTopicListener listener) {
 		if (listener == null) {
@@ -108,6 +113,14 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 
 	public void setAppId(String appId) {
 		this.appId = appId;
+	}
+
+	public boolean isIgnoreSelfMessage() {
+		return ignoreSelfMessage;
+	}
+
+	public void setIgnoreSelfMessage(boolean ignoreSelfMessage) {
+		this.ignoreSelfMessage = ignoreSelfMessage;
 	}
 	
 }
