@@ -1,6 +1,6 @@
 package com.lifesense.pss.resolver;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import kafka.consumer.ConsumerIterator;
 import kafka.message.MessageAndMetadata;
@@ -17,12 +17,12 @@ import com.lifesense.pss.encode.ObjectEncoder;
  */
 public class ListenerExecutor implements Runnable {
 	private ConsumerIterator<byte[], byte[]> consumer;
-	private ExecutorService executor;
+	private ThreadPoolExecutor executor;
 	private ListenerResolver listenerResolver;
 	private String topic;
 	private Logger logger = LoggerFactory.getLogger(ListenerExecutor.class);
 
-	public ListenerExecutor(ConsumerIterator<byte[], byte[]> consumer, ExecutorService executor, String topic, ListenerResolver listenerResolver) {
+	public ListenerExecutor(ConsumerIterator<byte[], byte[]> consumer, ThreadPoolExecutor executor, String topic, ListenerResolver listenerResolver) {
 		super();
 		this.consumer = consumer;
 		this.executor = executor;
@@ -37,7 +37,7 @@ public class ListenerExecutor implements Runnable {
 			//取出消息后继续监听
 			submitCaller(new ListenerExecutor(consumer, executor, topic, listenerResolver));
 			
-			logger.debug("received message of topic {}: {} |context: {}", topic, new String(m.message()), m.key());
+			logger.debug("received message of topic {}: {} |context: {}", topic, new String(m.message()), new String(m.key()));
 
 			MessageContext context = null;
 			try {
@@ -54,7 +54,9 @@ public class ListenerExecutor implements Runnable {
 	}
 
 	protected void submitCaller(ListenerExecutor runner) {
-		runner.executor.submit(runner);
+		ThreadPoolExecutor currentExecutor = runner.executor;
+		currentExecutor.submit(runner);
+		logger.debug("submit runner, current active threads: {}, current pool threads: {} ", currentExecutor.getActiveCount(), currentExecutor.getPoolSize());
 
 	}
 

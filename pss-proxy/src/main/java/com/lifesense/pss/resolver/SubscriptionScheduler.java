@@ -2,8 +2,8 @@ package com.lifesense.pss.resolver;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import kafka.consumer.KafkaStream;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class SubscriptionScheduler {
-	private ExecutorService executor;
+	private ThreadPoolExecutor executor;
 	private Logger logger = LoggerFactory.getLogger(SubscriptionScheduler.class);
 	private ListenerResolver listenerResolver;
 
@@ -44,7 +44,9 @@ public class SubscriptionScheduler {
 	public void start() {
 		Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = this.listenerResolver.buildConsumer();
 
-		executor = Executors.newFixedThreadPool(this.listenerResolver.getThreads());
+		//executor = Executors.newFixedThreadPool(this.listenerResolver.getThreads());
+		int threads = this.listenerResolver.getThreads();
+		executor = new ThreadPoolExecutor(threads, threads, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 
 		if (consumerMap != null) {
 			//循环提交监听
