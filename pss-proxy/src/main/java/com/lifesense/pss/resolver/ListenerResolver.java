@@ -42,4 +42,6 @@ public interface ListenerResolver {
 	ConsumerConnector getConsumer();
 	
 	int getThreads();
+	
+	int getMaxQueueSize();
 }

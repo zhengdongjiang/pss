@@ -46,7 +46,8 @@ public class SubscriptionScheduler {
 
 		//executor = Executors.newFixedThreadPool(this.listenerResolver.getThreads());
 		int threads = this.listenerResolver.getThreads();
-		executor = new ThreadPoolExecutor(threads, threads, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		int maxQueueSize = this.listenerResolver.getMaxQueueSize();
+		executor = new ThreadPoolExecutor(threads, threads*2, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(maxQueueSize));
 
 		if (consumerMap != null) {
 			//循环提交监听

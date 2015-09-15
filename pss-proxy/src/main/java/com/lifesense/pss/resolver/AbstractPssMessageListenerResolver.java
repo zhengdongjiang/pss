@@ -25,6 +25,7 @@ public abstract class AbstractPssMessageListenerResolver implements ListenerReso
 	private ConsumerConnector consumer;
 	private int threads;
 	private boolean ignoreSelfMessage = true;
+	private int maxQueueSize = 1000;
 	
 	public String getZookeeper() {
 		return zookeeper;
@@ -119,6 +120,14 @@ public abstract class AbstractPssMessageListenerResolver implements ListenerReso
 
 	public void setIgnoreSelfMessage(boolean ignoreSelfMessage) {
 		this.ignoreSelfMessage = ignoreSelfMessage;
+	}
+
+	public int getMaxQueueSize() {
+		return maxQueueSize;
+	}
+
+	public void setMaxQueueSize(int maxQueueSize) {
+		this.maxQueueSize = maxQueueSize;
 	}
 	
 }
