@@ -8,7 +8,6 @@ import java.util.Properties;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.KafkaStream;
 import kafka.consumer.Whitelist;
-import kafka.javaapi.consumer.ConsumerConnector;
 
 import com.lifesense.pss.MessageContext;
 import com.lifesense.pss.StringTopicListener;
@@ -18,17 +17,9 @@ import com.lifesense.pss.api.PssMessage;
  * @author ZengFC
  *
  */
-public class DefaultPatternMessageListenerResolver implements ListenerResolver{
+public class DefaultPatternMessageListenerResolver extends ConfigurableListenerResolver  implements ListenerResolver{
 	private String topicPattern;
 	private StringTopicListener listener;
-	private String zookeeper;
-	private String appId;
-	private int sessionTimeout = 400;
-	private int syncTimeout = 200;
-	private int autoCommitInterval = 1000;
-	private ConsumerConnector consumer;
-	private int threads = 3;
-	private boolean ignoreSelfMessage = true;
 	
 	public void setListener(String topicPattern, StringTopicListener listener) {
 		if (listener == null) {
@@ -38,37 +29,6 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 		this.listener = listener;
 	}
 	
-	public String getZookeeper() {
-		return zookeeper;
-	}
-
-	public void setZookeeper(String zookeeper) {
-		this.zookeeper = zookeeper;
-	}
-
-	public int getSessionTimeout() {
-		return sessionTimeout;
-	}
-
-	public void setSessionTimeout(int sessionTimeout) {
-		this.sessionTimeout = sessionTimeout;
-	}
-
-	public int getSyncTimeout() {
-		return syncTimeout;
-	}
-
-	public void setSyncTimeout(int syncTimeout) {
-		this.syncTimeout = syncTimeout;
-	}
-
-	public int getAutoCommitInterval() {
-		return autoCommitInterval;
-	}
-
-	public void setAutoCommitInterval(int autoCommitInterval) {
-		this.autoCommitInterval = autoCommitInterval;
-	}
 
 
 
@@ -79,10 +39,10 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 
 	@Override
 	public Map<String, List<KafkaStream<byte[], byte[]>>> buildConsumer() {
-		consumer = kafka.consumer.Consumer.createJavaConsumerConnector(createConsumerConfig());
+		setConsumer(kafka.consumer.Consumer.createJavaConsumerConnector(createConsumerConfig()));
 		
 		Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = new HashMap<String, List<KafkaStream<byte[],byte[]>>>();
-		List<KafkaStream<byte[], byte[]>> streams = consumer.createMessageStreamsByFilter(new Whitelist(topicPattern), threads);
+		List<KafkaStream<byte[], byte[]>> streams = getConsumer().createMessageStreamsByFilter(new Whitelist(topicPattern), getThreads());
 		consumerMap.put(topicPattern, streams);
 		return consumerMap;
 		
@@ -98,29 +58,5 @@ public class DefaultPatternMessageListenerResolver implements ListenerResolver{
 		return new ConsumerConfig(props);
 	}
 
-	public int getThreads() {
-		return threads;
-	}
-
-
-	public ConsumerConnector getConsumer() {
-		return consumer;
-	}
-
-	public String getAppId() {
-		return appId;
-	}
-
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
-
-	public boolean isIgnoreSelfMessage() {
-		return ignoreSelfMessage;
-	}
-
-	public void setIgnoreSelfMessage(boolean ignoreSelfMessage) {
-		this.ignoreSelfMessage = ignoreSelfMessage;
-	}
 	
 }
