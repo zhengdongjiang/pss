@@ -56,7 +56,7 @@ public class SpringPssMessageListenerResolver extends AbstractPssMessageListener
 		setConsumer(kafka.consumer.Consumer.createJavaConsumerConnector(createConsumerConfig()));
 		@SuppressWarnings("rawtypes")
 		Map<String,PssMessageTopicListener> maps = applicationContext.getBeansOfType(PssMessageTopicListener.class);
-		if (getThreads() < 1){
+		if (getThreads() < maps.size()  * getPartitionsPerTopic()){
 			setThreads((maps.size()  * getPartitionsPerTopic()) + 1);
 		}
 		Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
