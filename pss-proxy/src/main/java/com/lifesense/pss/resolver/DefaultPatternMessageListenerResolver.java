@@ -42,7 +42,7 @@ public class DefaultPatternMessageListenerResolver extends ConfigurableListenerR
 		setConsumer(kafka.consumer.Consumer.createJavaConsumerConnector(createConsumerConfig()));
 		
 		Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = new HashMap<String, List<KafkaStream<byte[],byte[]>>>();
-		List<KafkaStream<byte[], byte[]>> streams = getConsumer().createMessageStreamsByFilter(new Whitelist(topicPattern), getThreads());
+		List<KafkaStream<byte[], byte[]>> streams = getConsumer().createMessageStreamsByFilter(new Whitelist(topicPattern), getPartitionsPerTopic());
 		consumerMap.put(topicPattern, streams);
 		return consumerMap;
 		

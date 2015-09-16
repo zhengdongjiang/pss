@@ -16,17 +16,6 @@ import com.lifesense.pss.api.PssMessage;
  */
 public abstract class AbstractPssMessageListenerResolver extends ConfigurableListenerResolver implements ListenerResolver{
 	
-	private float threadsTimes = 2;	//线程因数. 表示每个订阅的消息大概由几个线程去监听, 可以是小数
-	
-	
-
-	public float getThreadsTimes() {
-		return threadsTimes;
-	}
-
-	public void setThreadsTimes(float threadsTimes) {
-		this.threadsTimes = threadsTimes;
-	}
 
 	public abstract <T extends PssMessage>void doListener(String topic, byte[] message, MessageContext context);
 

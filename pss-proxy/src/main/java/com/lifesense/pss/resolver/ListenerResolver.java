@@ -43,5 +43,7 @@ public interface ListenerResolver {
 	
 	int getThreads();
 	
+	int getPartitionsPerTopic();
+	
 	int getMaxQueueSize();
 }

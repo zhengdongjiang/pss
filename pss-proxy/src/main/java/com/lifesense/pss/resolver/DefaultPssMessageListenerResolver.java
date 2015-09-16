@@ -66,12 +66,13 @@ public class DefaultPssMessageListenerResolver extends AbstractPssMessageListene
 	@Override
 	public Map<String, List<KafkaStream<byte[], byte[]>>> buildConsumer() {
 		setConsumer(kafka.consumer.Consumer.createJavaConsumerConnector(createConsumerConfig()));
-		setThreads((int) (pssListeners.size()  * getThreadsTimes()) + 1);
+		if (getThreads() < 1){
+			setThreads((pssListeners.size()  * getPartitionsPerTopic()) + 1);
+		}
 		Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
 		
-		Integer threadsPerTopic = new Integer((int)getThreadsTimes());
 		for (String pssTopic : pssListeners.keySet()) {
-			topicCountMap.put(pssTopic, threadsPerTopic);
+			topicCountMap.put(pssTopic, getPartitionsPerTopic());
 		}
 		Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = null;
 		if (!topicCountMap.isEmpty()) {
