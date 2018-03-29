@@ -1,7 +1,7 @@
 # kafka消息发布订阅系统
 ***
 ### 在spring中配置
- 
+```java 
    <!-- 发布配置 -->
 	<bean id="publisher" class="com.bfs.pss.proxy.PssPublisherProxy" init-method="init" destroy-method="destory">
 		<property name="kafkaBrokers" value="kafka地址:端口" /> <!-- 配置kafka brokers地址-->
@@ -24,3 +24,4 @@
 	<task:executor id="lsExecutor" pool-size="2" />
 	<task:scheduler id="lsScheduler" pool-size="2" />
 	<task:annotation-driven executor="lsExecutor" scheduler="lsScheduler" />
+```
