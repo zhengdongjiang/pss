@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.lifesense</groupId>
+	<groupId>com.bfs</groupId>
 	<artifactId>pss</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>publish-subscribe system</name>
-	<description>乐心消息发布订阅系统</description>
+	<description>消息发布订阅系统</description>
 	<modules>
 		<module>pss-api</module>
 		<module>pss-proxy</module>
@@ -67,13 +67,13 @@
 		</plugins>
 	</build> 
 	<distributionManagement>
-		<repository>
+		<!-- <repository>
 			<id>ls-nexus</id>
 			<url>http://codex.lifesense.com:8081/nexus/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>ls-nexus</id>
 			<url>http://codex.lifesense.com:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
+		</snapshotRepository> -->
 	</distributionManagement>
 </project>
