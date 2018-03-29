@@ -1,6 +1,6 @@
-#kafka消息发布订阅系统
+# kafka消息发布订阅系统
 ***
-###在spring中配置
+### 在spring中配置
  
    <!-- 发布配置 -->
 	<bean id="publisher" class="com.bfs.pss.proxy.PssPublisherProxy" init-method="init" destroy-method="destory">
