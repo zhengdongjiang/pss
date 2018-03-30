@@ -1,6 +1,6 @@
 # kafka消息发布订阅系统
 ***
-### 在spring中配置：
+### 在spring中XMl配置：
 ```java 
 <!-- 发布配置 -->
 <bean id="publisher" class="com.bfs.pss.proxy.PssPublisherProxy" init-method="init" destroy-method="destory">
@@ -26,3 +26,93 @@
 <task:scheduler id="lsScheduler" pool-size="2" />
 <task:annotation-driven executor="lsExecutor" scheduler="lsScheduler" />
 ```
+### 在spring-boot中配置：
+```java
+/**
+  * 配置发布
+  * 
+  * @return
+  */
+@Bean(initMethod = "init", destroyMethod = "destory")
+public PssPublisherProxy getPssPublisherProxy() {
+	PssPublisherProxy pssPublisherProxy = new PssPublisherProxy();
+	...
+	return pssPublisherProxy;
+}
+
+/**
+  * 订阅
+  * 
+  * @return
+  */
+@Bean
+public SpringPssMessageListenerResolver getSpringPssMessageListenerResolver() {
+       SpringPssMessageListenerResolver springPssMessageListenerResolver = new SpringPssMessageListenerResolver();
+       ...
+       springPssMessageListenerResolver.setThreads(1);
+       springPssMessageListenerResolver.setSessionTimeout(5000);
+       springPssMessageListenerResolver.setIgnoreSelfMessage(false);
+       return springPssMessageListenerResolver;
+}
+
+@Bean(initMethod = "start", destroyMethod = "destory")
+public SubscriptionScheduler getSubscriptionScheduler() {
+	SubscriptionScheduler subscriptionScheduler = new SubscriptionScheduler(getSpringPssMessageListenerResolver());
+		return subscriptionScheduler;
+}
+```
+### 发布消息
+```java
+    消息类需实现PssMessage接口：
+    
+    public class LogMessage implements PssMessage {
+
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+     }
+
+     发布消息：
+
+     public class KafkaTest {
+
+	@Autowired
+	private PssPublisher publisher;
+	
+
+	/**
+	 *
+	 *发布消息
+	 */
+	@Test
+	public void pubMessage() {
+		LogMessage logMessage = new LogMessage();
+		logMessage.setName("test");
+		publisher.publish(logMessage);
+	}
+     }
+     ```
+    
+     ### 订阅消息
+         实现PssMessageTopicListener接口泛型为订阅的消息类型
+	 ```java
+	 public class LogListener implements  PssMessageTopicListener<LogMessage>{
+	
+	private final Logger logger = LoggerFactory.getLogger(LogListener.class);
+
+	@Override
+	public void onMessage(LogMessage message, MessageContext context) {
+		logger.debug("===========================收到消息了========================");
+	}
+
+}
+```
+     
+
