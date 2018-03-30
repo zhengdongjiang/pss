@@ -62,9 +62,8 @@ public SubscriptionScheduler getSubscriptionScheduler() {
 }
 ```
 ### 发布消息
-```java
     消息类需实现PssMessage接口：
-    
+```java
     public class LogMessage implements PssMessage {
 
 	private String name;
@@ -78,8 +77,6 @@ public SubscriptionScheduler getSubscriptionScheduler() {
 	}
 
      }
-
-     发布消息：
 
      public class KafkaTest {
 
@@ -99,11 +96,10 @@ public SubscriptionScheduler getSubscriptionScheduler() {
 	}
      }
      ```
-    
-     ### 订阅消息
+### 订阅消息
          实现PssMessageTopicListener接口泛型为订阅的消息类型
-	 ```java
-	 public class LogListener implements  PssMessageTopicListener<LogMessage>{
+```java
+public class LogListener implements  PssMessageTopicListener<LogMessage>{
 	
 	private final Logger logger = LoggerFactory.getLogger(LogListener.class);
 
