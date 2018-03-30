@@ -36,7 +36,8 @@
 @Bean(initMethod = "init", destroyMethod = "destory")
 public PssPublisherProxy getPssPublisherProxy() {
 	PssPublisherProxy pssPublisherProxy = new PssPublisherProxy();
-	...
+	pssPublisherProxy.setKafkaBrokers(...); //kafka地址
+	pssPublisherProxy.setAppId(...);//应有id
 	return pssPublisherProxy;
 }
 
@@ -48,8 +49,9 @@ public PssPublisherProxy getPssPublisherProxy() {
 @Bean
 public SpringPssMessageListenerResolver getSpringPssMessageListenerResolver() {
        SpringPssMessageListenerResolver springPssMessageListenerResolver = new SpringPssMessageListenerResolver();
-       ...
-       springPssMessageListenerResolver.setThreads(1);
+       springPssMessageListenerResolver.setZookeeper(...); //zookeeper地址
+       springPssMessageListenerResolver.setAppId(...); //应用id
+       springPssMessageListenerResolver.setThreads(1);
        springPssMessageListenerResolver.setSessionTimeout(5000);
        springPssMessageListenerResolver.setIgnoreSelfMessage(false);
        return springPssMessageListenerResolver;
@@ -62,9 +64,9 @@ public SubscriptionScheduler getSubscriptionScheduler() {
 }
 ```
 ### 发布消息
-    消息类需实现PssMessage接口：
+消息类需实现PssMessage接口：
 ```java
-    public class LogMessage implements PssMessage {
+public class LogMessage implements PssMessage {
 
 	private String name;
 
@@ -75,10 +77,9 @@ public SubscriptionScheduler getSubscriptionScheduler() {
 	public void setName(String name) {
 		this.name = name;
 	}
+}
 
-     }
-
-     public class KafkaTest {
+public class KafkaTest {
 
 	@Autowired
 	private PssPublisher publisher;
@@ -94,10 +95,10 @@ public SubscriptionScheduler getSubscriptionScheduler() {
 		logMessage.setName("test");
 		publisher.publish(logMessage);
 	}
-     }
-     ```
+}
+```
 ### 订阅消息
-         实现PssMessageTopicListener接口泛型为订阅的消息类型
+实现PssMessageTopicListener接口泛型为订阅的消息类型
 ```java
 public class LogListener implements  PssMessageTopicListener<LogMessage>{
 	
